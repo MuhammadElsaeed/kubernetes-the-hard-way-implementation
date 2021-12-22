@@ -20,3 +20,11 @@ gcloud compute ssh controller-0 --command "sudo ETCDCTL_API=3 etcdctl member lis
   --cacert=/etc/etcd/ca.pem \
   --cert=/etc/etcd/kubernetes.pem \
   --key=/etc/etcd/kubernetes-key.pem"
+
+print_headline "bootstrap kubernetes controllers"
+for instance in controller-0 controller-1 controller-2; do
+  print_comment "configure kubernetes conrollers on ${instance}"
+  gcloud compute scp bootstrap-controllers.sh ${instance}:/tmp/
+  gcloud compute ssh ${instance} --command "sudo chmod +x /tmp/bootstrap-controllers.sh"
+  gcloud compute ssh ${instance} --command  "sudo /tmp/bootstrap-controllers.sh"
+done
