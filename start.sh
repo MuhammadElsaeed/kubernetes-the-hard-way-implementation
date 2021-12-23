@@ -64,3 +64,14 @@ gcloud compute forwarding-rules create kubernetes-forwarding-rule \
 
 print_comment "verification"
 curl --cacert certs/ca.pem https://${KUBERNETES_PUBLIC_ADDRESS}:6443/version
+
+print_headline "bootstrap kubernetes worker nodes"
+for instance in worker-0 worker-1 worker-2; do
+  gcloud compute scp remote-scripts/bootstrap-workers.sh ${instance}:/tmp/
+  gcloud compute ssh ${instance} --command "sudo chmod +x /tmp/bootstrap-workers.sh"
+  gcloud compute ssh ${instance} --command  "sudo /tmp/bootstrap-workers.sh"
+done
+
+print_comment "verification"
+gcloud compute ssh controller-0 \
+  --command "kubectl get nodes --kubeconfig admin.kubeconfig"
