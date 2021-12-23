@@ -28,3 +28,9 @@ for instance in controller-0 controller-1 controller-2; do
   gcloud compute ssh ${instance} --command "sudo chmod +x /tmp/bootstrap-controllers.sh"
   gcloud compute ssh ${instance} --command  "sudo /tmp/bootstrap-controllers.sh"
 done
+
+print_comment "RBAC for Kubelet Authorization"
+  gcloud compute scp remote-scripts/RBAC-for-kubelet.sh  controller-0:/tmp/
+  gcloud compute ssh  controller-0 --command "sudo chmod +x /tmp/RBAC-for-kubelet.sh"
+  gcloud compute ssh  controller-0 --command  "sudo /tmp/RBAC-for-kubelet.sh"
+  
