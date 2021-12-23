@@ -16,7 +16,7 @@ function install_package(){
     print_headline "install ${package_name}"
     if ! command -v $package_name &> /dev/null
     then
-        wget -q --show-progress --https-only --timestamping \
+        wget -q --https-only --timestamping \
             $package_url
         chmod +x $package_name
         sudo mv $package_name /usr/local/bin/

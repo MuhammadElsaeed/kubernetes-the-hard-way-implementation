@@ -25,7 +25,7 @@ gcloud compute firewall-rules create kubernetes-the-hard-way-allow-internal \
 
 gcloud compute firewall-rules list --filter="network:kubernetes-the-hard-way"
 
-print_comment "create staic IP for the internet facing load balancer"
+print_comment "create static IP for the internet facing load balancer"
 gcloud compute addresses create kubernetes-the-hard-way \
   --region $(gcloud config get-value compute/region)
 gcloud compute addresses list --filter="name=('kubernetes-the-hard-way')"
@@ -62,5 +62,11 @@ for i in 0 1 2; do
     --subnet kubernetes \
     --tags kubernetes-the-hard-way,worker
 done
+
+IP=$(gcloud compute instances list | awk '/'worker-2'/ {print $5}')
+while !(nc -w 3 -z $IP 22); do
+    echo "instances are not ready yet."
+done
+sleep 10
 
 gcloud compute instances list --filter="tags.items=kubernetes-the-hard-way"
