@@ -9,7 +9,7 @@ print_headline "bootstrap etcd server on each controlplane node"
 
 for instance in controller-0 controller-1 controller-2; do
   print_comment "install etcd on ${instance}"
-  gcloud compute scp bootstrap-etcd.sh ${instance}:/tmp/
+  gcloud compute scp remote-scripts/bootstrap-etcd.sh ${instance}:/tmp/
   gcloud compute ssh ${instance} --command "sudo chmod +x /tmp/bootstrap-etcd.sh"
   gcloud compute ssh ${instance} --command  "sudo /tmp/bootstrap-etcd.sh"
 done
@@ -24,7 +24,7 @@ gcloud compute ssh controller-0 --command "sudo ETCDCTL_API=3 etcdctl member lis
 print_headline "bootstrap kubernetes controllers"
 for instance in controller-0 controller-1 controller-2; do
   print_comment "configure kubernetes conrollers on ${instance}"
-  gcloud compute scp bootstrap-controllers.sh ${instance}:/tmp/
+  gcloud compute scp remote-scripts/bootstrap-controllers.sh ${instance}:/tmp/
   gcloud compute ssh ${instance} --command "sudo chmod +x /tmp/bootstrap-controllers.sh"
   gcloud compute ssh ${instance} --command  "sudo /tmp/bootstrap-controllers.sh"
 done
